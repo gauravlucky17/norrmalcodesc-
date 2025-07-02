@@ -28,7 +28,7 @@ public class Solution {
         return c;
     }
 }
-
+// dont include in the leetcode
 public class Program
 {
     public static void Main(string[] args)
