@@ -52,3 +52,55 @@ public class Program
         }
     }
 }
+
+
+2.  Longest Common Prefix
+
+
+using System;
+using System.Collections.Generic;
+
+public class Solution {
+    public string LongestCommonPrefix(List<string> strs) {
+        if (strs.Count == 0)
+            return "";
+
+        for (int i = 0; i < strs[0].Length; ++i) {
+            for (int j = 1; j < strs.Count; ++j) {
+                if (i == strs[j].Length || strs[j][i] != strs[0][i])
+                    return strs[0].Substring(0, i);
+            }
+        }
+
+        return strs[0];
+    }
+}
+
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        Solution sol = new Solution();
+
+        // Test cases
+        List<List<string>> testCases = new List<List<string>>
+        {
+            new List<string> { "flower", "flow", "flight" },
+            new List<string> { "dog", "racecar", "car" },
+            new List<string> { "interspecies", "interstellar", "interstate" },
+            new List<string> { "throne", "throne" },
+            new List<string> { "throne", "dungeon" },
+            new List<string> { "" },
+            new List<string> { }
+        };
+
+        foreach (var strs in testCases)
+        {
+            string prefix = sol.LongestCommonPrefix(strs);
+            Console.WriteLine($"Input: [{string.Join(", ", strs)}]");
+            Console.WriteLine($"Longest Common Prefix: \"{prefix}\"");
+            Console.WriteLine();
+        }
+    }
+}
+
