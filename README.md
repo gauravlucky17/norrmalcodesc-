@@ -7,10 +7,12 @@ using System;
 using System.Collections.Generic;
 
 public class Solution {
+
     public int RomanToInt(string s) {
+     
         int ans = 0;
         Dictionary<char, int> roman = new Dictionary<char, int>();
-
+        
         roman['I'] = 1;
         roman['V'] = 5;
         roman['X'] = 10;
@@ -33,8 +35,11 @@ public class Solution {
 
 public class Program
 {
+    
     public static void Main(string[] args)
+    
     {
+    
         Solution sol = new Solution();
 
         // Test cases
