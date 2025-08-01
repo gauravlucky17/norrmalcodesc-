@@ -1,0 +1,95 @@
+Given an integer numRows, return the first numRows of Pascal's triangle.
+
+In Pascal's triangle, each number is the sum of the two numbers directly above it as shown:
+
+
+ 
+
+Example 1:
+
+Input: numRows = 5
+Output: [[1],[1,1],[1,2,1],[1,3,3,1],[1,4,6,4,1]]
+Example 2:
+
+Input: numRows = 1
+Output: [[1]]
+ 
+
+Constraints:
+
+1 <= numRows <= 30
+
+// leet code answer 
+
+
+public class Solution
+{
+    public IList<IList<int>> Generate(int numRows)
+    {
+        var triangle = new List<IList<int>>();
+
+        for (int i = 0; i < numRows; i++)
+        {
+            var row = new List<int>();
+            row.Add(1); // First element is always 1
+
+            for (int j = 1; j < i; j++)
+            {
+                // Add the sum of the two numbers above
+                row.Add(triangle[i - 1][j - 1] + triangle[i - 1][j]);
+            }
+
+            if (i > 0)
+                row.Add(1); // Last element is always 1 (except for first row)
+
+            triangle.Add(row);
+        }
+
+        return triangle;
+    }
+}
+
+
+// with main function 
+
+using System;
+using System.Collections.Generic;
+
+public class Solution
+{
+    public IList<IList<int>> Generate(int numRows)
+    {
+        var triangle = new List<IList<int>>();
+
+        for (int i = 0; i < numRows; i++)
+        {
+            var row = new List<int>();
+            row.Add(1); // First element is always 1
+
+            for (int j = 1; j < i; j++)
+            {
+                // Each middle value is sum of two values above it
+                row.Add(triangle[i - 1][j - 1] + triangle[i - 1][j]);
+            }
+
+            if (i > 0)
+                row.Add(1); // Last element is always 1 (except for first row)
+
+            triangle.Add(row);
+        }
+
+        return triangle;
+    }
+
+    public static void Main()
+    {
+        Solution sol = new Solution();
+        int numRows = 5;
+        var result = sol.Generate(numRows);
+
+        foreach (var row in result)
+        {
+            Console.WriteLine("[" + string.Join(",", row) + "]");
+        }
+    }
+}
