@@ -1,0 +1,243 @@
+You are given two arrays of integers, fruits and baskets, each of length n, where fruits[i] represents the quantity of the ith type of fruit, and baskets[j] represents the capacity of the jth basket.
+
+From left to right, place the fruits according to these rules:
+
+Each fruit type must be placed in the leftmost available basket with a capacity greater than or equal to the quantity of that fruit type.
+Each basket can hold only one type of fruit.
+If a fruit type cannot be placed in any basket, it remains unplaced.
+Return the number of fruit types that remain unplaced after all possible allocations are made.
+
+ 
+
+Example 1:
+
+Input: fruits = [4,2,5], baskets = [3,5,4]
+
+Output: 1
+
+Explanation:
+
+fruits[0] = 4 is placed in baskets[1] = 5.
+fruits[1] = 2 is placed in baskets[0] = 3.
+fruits[2] = 5 cannot be placed in baskets[2] = 4.
+Since one fruit type remains unplaced, we return 1.
+
+Example 2:
+
+Input: fruits = [3,6,1], baskets = [6,4,7]
+
+Output: 0
+
+Explanation:
+
+fruits[0] = 3 is placed in baskets[0] = 6.
+fruits[1] = 6 cannot be placed in baskets[1] = 4 (insufficient capacity) but can be placed in the next available basket, baskets[2] = 7.
+fruits[2] = 1 is placed in baskets[1] = 4.
+Since all fruits are successfully placed, we return 0.
+
+ 
+
+Constraints:
+
+n == fruits.length == baskets.length
+1 <= n <= 100
+1 <= fruits[i], baskets[i] <= 1000
+
+
+
+// leet code answer
+
+
+
+public class SegmentTree
+{
+    private readonly int n;
+    private readonly List<int> tree;
+
+    public SegmentTree(List<int> nums)
+    {
+        n = nums.Count;
+        tree = new List<int>(new int[n * 4]);
+        Build(nums, 0, 0, n - 1);
+    }
+
+    public void Update(int i, int val)
+    {
+        Update(0, 0, n - 1, i, val);
+    }
+
+    public int QueryFirst(int target)
+    {
+        return QueryFirst(0, 0, n - 1, target);
+    }
+
+    private void Build(List<int> nums, int treeIndex, int lo, int hi)
+    {
+        if (lo == hi)
+        {
+            tree[treeIndex] = nums[lo];
+            return;
+        }
+        int mid = (lo + hi) / 2;
+        Build(nums, 2 * treeIndex + 1, lo, mid);
+        Build(nums, 2 * treeIndex + 2, mid + 1, hi);
+        tree[treeIndex] = Math.Max(tree[2 * treeIndex + 1], tree[2 * treeIndex + 2]);
+    }
+
+    private void Update(int treeIndex, int lo, int hi, int i, int val)
+    {
+        if (lo == hi)
+        {
+            tree[treeIndex] = val;
+            return;
+        }
+        int mid = (lo + hi) / 2;
+        if (i <= mid)
+            Update(2 * treeIndex + 1, lo, mid, i, val);
+        else
+            Update(2 * treeIndex + 2, mid + 1, hi, i, val);
+        tree[treeIndex] = Math.Max(tree[2 * treeIndex + 1], tree[2 * treeIndex + 2]);
+    }
+
+    private int QueryFirst(int treeIndex, int lo, int hi, int target)
+    {
+        if (tree[treeIndex] < target)
+            return -1;
+
+        if (lo == hi)
+        {
+            Update(lo, -1); // Mark as used
+            return lo;
+        }
+
+        int mid = (lo + hi) / 2;
+        int leftChild = tree[2 * treeIndex + 1];
+        return leftChild >= target
+            ? QueryFirst(2 * treeIndex + 1, lo, mid, target)
+            : QueryFirst(2 * treeIndex + 2, mid + 1, hi, target);
+    }
+}
+
+public class Solution
+{
+    public int NumOfUnplacedFruits(int[] fruits, int[] baskets)
+    {
+        int ans = 0;
+        SegmentTree tree = new SegmentTree(new List<int>(baskets));
+
+        foreach (int fruit in fruits)
+        {
+            if (tree.QueryFirst(fruit) == -1)
+                ++ans;
+        }
+
+        return ans;
+    }
+}
+
+
+// with main function 
+
+
+using System;
+using System.Collections.Generic;
+
+public class SegmentTree
+{
+    private readonly int n;
+    private readonly List<int> tree;
+
+    public SegmentTree(List<int> nums)
+    {
+        n = nums.Count;
+        tree = new List<int>(new int[n * 4]);
+        Build(nums, 0, 0, n - 1);
+    }
+
+    public void Update(int i, int val)
+    {
+        Update(0, 0, n - 1, i, val);
+    }
+
+    public int QueryFirst(int target)
+    {
+        return QueryFirst(0, 0, n - 1, target);
+    }
+
+    private void Build(List<int> nums, int treeIndex, int lo, int hi)
+    {
+        if (lo == hi)
+        {
+            tree[treeIndex] = nums[lo];
+            return;
+        }
+        int mid = (lo + hi) / 2;
+        Build(nums, 2 * treeIndex + 1, lo, mid);
+        Build(nums, 2 * treeIndex + 2, mid + 1, hi);
+        tree[treeIndex] = Math.Max(tree[2 * treeIndex + 1], tree[2 * treeIndex + 2]);
+    }
+
+    private void Update(int treeIndex, int lo, int hi, int i, int val)
+    {
+        if (lo == hi)
+        {
+            tree[treeIndex] = val;
+            return;
+        }
+        int mid = (lo + hi) / 2;
+        if (i <= mid)
+            Update(2 * treeIndex + 1, lo, mid, i, val);
+        else
+            Update(2 * treeIndex + 2, mid + 1, hi, i, val);
+        tree[treeIndex] = Math.Max(tree[2 * treeIndex + 1], tree[2 * treeIndex + 2]);
+    }
+
+    private int QueryFirst(int treeIndex, int lo, int hi, int target)
+    {
+        if (tree[treeIndex] < target)
+            return -1;
+
+        if (lo == hi)
+        {
+            Update(lo, -1); // Mark as used
+            return lo;
+        }
+
+        int mid = (lo + hi) / 2;
+        int leftChild = tree[2 * treeIndex + 1];
+        return leftChild >= target
+            ? QueryFirst(2 * treeIndex + 1, lo, mid, target)
+            : QueryFirst(2 * treeIndex + 2, mid + 1, hi, target);
+    }
+}
+
+public class Solution
+{
+    public int NumOfUnplacedFruits(int[] fruits, int[] baskets)
+    {
+        int ans = 0;
+        SegmentTree tree = new SegmentTree(new List<int>(baskets));
+
+        foreach (int fruit in fruits)
+        {
+            if (tree.QueryFirst(fruit) == -1)
+                ++ans;
+        }
+
+        return ans;
+    }
+}
+
+public class Program
+{
+    public static void Main()
+    {
+        // Example input
+        int[] fruits = { 4, 3, 5, 2 };
+        int[] baskets = { 5, 3, 1, 2 };
+
+        Solution solution = new Solution();
+        int result = solution.NumOfUnplacedFruits(fruits, baskets);
+        Console.WriteLine("Number of unplaced fruits: " + result);
+    }
+}
